@@ -9,10 +9,78 @@ import "bootstrap"
 import '../styles/index.css'
 
 // components
-import Home from './components/Home';
+import { Contador } from './components/Contador';
+import { Regresive } from './components/Regressive';
 
-ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <Home/>
-  </React.StrictMode>,
-)
+
+
+let seconds = 0;
+let regressive = 0;
+const newInput = (newValue) => {
+  regressive = parseInt(newValue) || 0;
+  render();
+};
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+const render = () => {
+  root.render(
+    <React.StrictMode>
+      <Contador
+        number= {seconds}
+        stop={() => clearInterval(contador)}
+        play={continuar}
+        reload={reiniciar}
+      >
+      </Contador>
+      <Regresive
+        number={regressive}
+        change={newInput}
+        stop={() => clearInterval(regreso)}
+        play={continuarReg}
+        reload={reiniciarReg}>
+      </Regresive>
+    </React.StrictMode>,
+  )
+}
+
+let reiniciar = () =>{
+  seconds = 0
+};
+
+let continuar = () => {
+  clearInterval(contador)
+  contador = setInterval(() => {
+    seconds++
+    render()
+  }, 1000);
+};
+
+let contador = setInterval(() => {
+  seconds++
+  render()
+}, 1000);
+
+
+let reiniciarReg = () =>{
+  regressive =0
+};
+
+let continuarReg = () => {
+clearInterval(regreso)
+regreso = setInterval(()=>{
+  regressive--
+  render()
+}, 1000);
+};
+
+let regreso = setInterval(() => {
+  if (regressive > 0) {
+    regressive--;
+    render();
+  } else {
+    clearInterval(regreso);
+  }
+}, 1000);
+
+
+render()
